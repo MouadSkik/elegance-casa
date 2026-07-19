@@ -11,12 +11,12 @@ function scrollToCatalogue() {
   document.getElementById('catalogue')?.scrollIntoView({ behavior: 'smooth' });
 }
 
-/* 1. Infinite moving header marquee, powered by framer-motion */
+/* 1. Fixed Infinite moving header marquee with proper array syntax mapping loops */
 export function MarqueeBanner() {
   const MARQUEE_TEXT = " ✨ LIVRAISON DISPONIBLE SUR TOUT LE MAROC — COMMANDEZ DIRECTEMENT VIA WHATSAPP ✨ SOLDES D'ÉTÉ — JUSQU'À -30% SUR UNE SÉLECTION DE BIJOUX EXCLUSIFS ";
 
   return (
-    <div className="overflow-hidden border-b border-[#D4A393]/20 py-2.5 w-full select-none relative z-50" style={{ backgroundColor: '#FAF6F0' }}>
+    <div className="overflow-hidden border-b border-[#D4A393]/20 py-2.5 w-full select-none relative z-50 bg-[#FAF6F0]">
       <motion.div
         className="flex w-max shrink-0 whitespace-nowrap text-[11px] font-light uppercase tracking-[0.24em] flex-nowrap"
         style={{ color: '#2E2724' }}
@@ -33,7 +33,7 @@ export function MarqueeBanner() {
   );
 }
 
-/* 2. Minimalist floating navbar matching your uploaded photo */
+/* 2. Minimalist floating navbar */
 function FloatingNavbar() {
   return (
     <header className="sticky top-0 z-40 border-b border-[#e3d9bf]/30 bg-[#fcfaf4]/90 backdrop-blur-md">
@@ -77,24 +77,13 @@ function FloatingNavbar() {
   );
 }
 
-/* 3. Editorial hero canvas - MATCHES YOUR UPLOADED IMAGE COMPLETELY */
+/* 3. Editorial hero canvas */
 function EditorialHero() {
   return (
     <section
       id="top"
       className="relative flex flex-col items-center justify-center px-4 pt-16 pb-20 text-center bg-[#fcfaf4]"
     >
-      {/* Scroll indicator eyebrow top anchor */}
-      <motion.span
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 1 }}
-        className="text-[9px] tracking-[0.3em] text-neutral-400 uppercase mb-20 block cursor-pointer"
-        onClick={scrollToCatalogue}
-      >
-        Scroll
-      </motion.span>
-
       <motion.p
         initial={{ opacity: 0, y: -6 }}
         animate={{ opacity: 1, y: 0 }}
@@ -104,7 +93,7 @@ function EditorialHero() {
         La Maison
       </motion.p>
 
-      {/* Replicating your beautiful degrading gold header title */}
+      {/* Dynamic inline styles ensuring your degrading gradient color works out of the box */}
       <motion.h1
         initial={{ opacity: 0, y: 14 }}
         animate={{ opacity: 1, y: 0 }}
@@ -114,7 +103,6 @@ function EditorialHero() {
         Collections <span className="text-degrade-gold italic font-normal">choisies</span>
       </motion.h1>
 
-      {/* Minimal luxury descriptive paragraph */}
       <motion.p
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -124,7 +112,6 @@ function EditorialHero() {
         Six familles de pièces, pensées comme un vocabulaire. À porter seules, ou à composer.
       </motion.p>
 
-      {/* Rounded pill filter button link block */}
       <motion.button
         onClick={scrollToCatalogue}
         initial={{ opacity: 0, y: 8 }}

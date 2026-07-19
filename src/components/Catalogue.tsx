@@ -65,9 +65,11 @@ export function Catalogue() {
             <p className="tracked-caps text-xs text-gold-deep">
               {activeCategory ? activeCategory.sub : 'All'}
             </p>
-            <h2 className="font-display text-4xl text-ink md:text-5xl">
-              {activeCategory ? activeCategory.label : 'Tous les produits'}
+            
+            <h2 id="catalogue" className="font-display text-3xl md:text-4xl lg:text-5xl font-light italic text-[#111111] tracking-wide mb-8">
+              Tous les produits
             </h2>
+
           </div>
           <p className="max-w-sm text-sm text-ink-soft">
             {activeCategory
