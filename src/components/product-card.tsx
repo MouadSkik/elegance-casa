@@ -3,7 +3,7 @@
 import { ArrowUpRight, Plus } from 'lucide-react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
-import type { Product } from '@/data/products';
+import type { Product } from '@/lib/types';
 
 type ProductCardProps = { product: Product; index: number; onAdd: (product: Product) => void; onOrder: (product: Product) => void };
 
