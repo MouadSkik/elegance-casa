@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import Image from 'next/image';
 import { addProductAction, deleteProductAction } from './actions';
 import { getProducts } from '@/lib/products-store';
 
@@ -12,20 +11,18 @@ export default function AdminDashboardPage() {
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [deleteStatus, setDeleteStatus] = useState<{ success: boolean; message: string } | null>(null);
 
-  // Load the live product metrics asynchronously on mount
   useEffect(() => {
     async function loadStats() {
       try {
         const data = await getProducts();
         setProductCount(data.length);
       } catch (err) {
-        console.error("Error loading catalogue variables:", err);
+        console.error("Error loading statistics:", err);
       }
     }
     loadStats();
   }, [addStatus, deleteStatus]);
 
-  // 🌟 FIXED: Absolute client-side form submission event blocker. Stops all 404 page routing reloads completely!
   async function handleAddProduct(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     e.stopPropagation();
@@ -40,13 +37,12 @@ export default function AdminDashboardPage() {
         (e.target as HTMLFormElement).reset();
       }
     } catch (err: any) {
-      setAddStatus({ success: false, message: err.message || "Une erreur s'est produite lors de l'envoi." });
+      setAddStatus({ success: false, message: err.message || "Une erreur s'est produite." });
     } finally {
       setAddLoading(false);
     }
   }
 
-  // 🌟 FIXED: Deletion event blocker. Keeps the screen steady and deletes in the background.
   async function handleDeleteProduct(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     e.stopPropagation();
@@ -61,7 +57,7 @@ export default function AdminDashboardPage() {
         (e.target as HTMLFormElement).reset();
       }
     } catch (err: any) {
-      setDeleteStatus({ success: false, message: err.message || "Une erreur s'est produite lors de la suppression." });
+      setDeleteStatus({ success: false, message: err.message || "Une erreur s'est produite." });
     } finally {
       setDeleteLoading(false);
     }
@@ -80,10 +76,9 @@ export default function AdminDashboardPage() {
           {productCount} pièces actuellement configurées dans votre base Supabase cloud.
         </p>
 
-        {/* Symmetric Split Dashboard Layout Frame Panel Deck */}
         <div className="mt-12 grid gap-10 border-t border-[#e3d9bf]/30 pt-10 md:grid-cols-2">
           
-          {/* LEFT DECK MODULE: REVOLUTIONIZED INSTANT UPLOAD FORM CONTAINER */}
+          {/* ADD PRODUCT MODULE */}
           <section className="rounded-[1.75rem] border border-[#e3d9bf]/20 bg-white/50 p-8 shadow-sm">
             <p className="text-[9px] uppercase tracking-widest text-[#a8845c] font-light">Opération A</p>
             <h2 className="font-display mt-1 text-2xl font-light italic text-[#111111] tracking-wide">
@@ -99,7 +94,7 @@ export default function AdminDashboardPage() {
                   type="text"
                   name="name"
                   required
-                  className="w-full rounded-xl border border-neutral-200 bg-white px-4 py-2.5 text-xs text-[#111111] focus:outline-none focus:border-[#c5a880]"
+                  className="w-full rounded-xl border border-neutral-200 bg-white px-4 py-2.5 text-xs text-[#111111] focus:outline-none"
                   placeholder="Ex: Bague Éclat Éternel"
                 />
               </div>
@@ -113,7 +108,7 @@ export default function AdminDashboardPage() {
                     type="number"
                     name="price"
                     required
-                    className="w-full rounded-xl border border-neutral-200 bg-white px-4 py-2.5 text-xs text-[#111111] focus:outline-none focus:border-[#c5a880]"
+                    className="w-full rounded-xl border border-neutral-200 bg-white px-4 py-2.5 text-xs text-[#111111] focus:outline-none"
                     placeholder="690"
                   />
                 </div>
@@ -125,7 +120,7 @@ export default function AdminDashboardPage() {
                   <select
                     name="category"
                     required
-                    className="w-full rounded-xl border border-neutral-200 bg-white px-4 py-2.5 text-xs text-[#111111] focus:outline-none focus:border-[#c5a880] appearance-none"
+                    className="w-full rounded-xl border border-neutral-200 bg-white px-4 py-2.5 text-xs text-[#111111] focus:outline-none"
                   >
                     <option value="bagues">Bagues</option>
                     <option value="boucles">Boucles</option>
@@ -143,7 +138,7 @@ export default function AdminDashboardPage() {
                 <input
                   type="text"
                   name="material"
-                  className="w-full rounded-xl border border-neutral-200 bg-white px-4 py-2.5 text-xs text-[#111111] focus:outline-none focus:border-[#c5a880]"
+                  className="w-full rounded-xl border border-neutral-200 bg-white px-4 py-2.5 text-xs text-[#111111] focus:outline-none"
                   placeholder="Ex: Plaqué or fin 18 carats"
                 />
               </div>
@@ -155,7 +150,7 @@ export default function AdminDashboardPage() {
                 <input
                   type="text"
                   name="sizes"
-                  className="w-full rounded-xl border border-neutral-200 bg-white px-4 py-2.5 text-xs text-[#111111] focus:outline-none focus:border-[#c5a880]"
+                  className="w-full rounded-xl border border-neutral-200 bg-white px-4 py-2.5 text-xs text-[#111111] focus:outline-none"
                   placeholder="Ex: 52, 54, 56"
                 />
               </div>
@@ -169,16 +164,16 @@ export default function AdminDashboardPage() {
                   name="image"
                   accept="image/*"
                   required
-                  className="w-full text-xs text-neutral-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-[10px] file:uppercase file:tracking-widest file:font-medium file:bg-[#c5a880]/10 file:text-[#c5a880] hover:file:bg-[#c5a880]/20 cursor-pointer"
+                  className="w-full text-xs text-neutral-500 cursor-pointer"
                 />
               </div>
 
               <button
                 type="submit"
                 disabled={addLoading}
-                className="w-full bg-[#C5A880] text-white py-3 rounded-full text-[10px] uppercase tracking-[0.2em] font-medium shadow-md transition-all hover:bg-[#a8845c] disabled:opacity-50 active:scale-98 mt-2 cursor-pointer"
+                className="w-full bg-[#C5A880] text-white py-3 rounded-full text-[10px] uppercase tracking-widest font-medium transition-all cursor-pointer"
               >
-                {addLoading ? 'Enregistrement en cours...' : 'Ajouter au catalogue'}
+                {addLoading ? 'Enregistrement...' : 'Ajouter au catalogue'}
               </button>
 
               {addStatus && (
@@ -191,7 +186,7 @@ export default function AdminDashboardPage() {
             </form>
           </section>
 
-          {/* RIGHT DECK MODULE: INSTANT DELETION ENGINE ROW CONTAINER */}
+          {/* REMOVE PRODUCT MODULE */}
           <section className="rounded-[1.75rem] border border-[#e3d9bf]/20 bg-white/50 p-8 shadow-sm">
             <p className="text-[9px] uppercase tracking-widest text-[#a8845c] font-light">Opération B</p>
             <h2 className="font-display mt-1 text-2xl font-light italic text-[#111111] tracking-wide">
@@ -201,13 +196,13 @@ export default function AdminDashboardPage() {
             <form onSubmit={handleDeleteProduct} className="mt-6 flex flex-col space-y-4">
               <div>
                 <label className="block text-[10px] uppercase tracking-widest text-neutral-400 font-light mb-1">
-                  Nom du produit ou SKU ID unique *
+                  Nom du produit ou ID unique *
                 </label>
                 <input
                   type="text"
                   name="identifier"
                   required
-                  className="w-full rounded-xl border border-neutral-200 bg-white px-4 py-2.5 text-xs text-[#111111] focus:outline-none focus:border-[#c5a880]"
+                  className="w-full rounded-xl border border-neutral-200 bg-white px-4 py-2.5 text-xs text-[#111111] focus:outline-none"
                   placeholder="Ex: bague-royal-coque"
                 />
               </div>
@@ -215,21 +210,23 @@ export default function AdminDashboardPage() {
               <button
                 type="submit"
                 disabled={deleteLoading}
-                className="w-full bg-red-600/90 text-white py-3 rounded-full text-[10px] uppercase tracking-[0.2em] font-medium shadow-md transition-all hover:bg-red-700 disabled:opacity-50 active:scale-98 mt-2 cursor-pointer"
+                className="w-full bg-red-600 text-white py-3 rounded-full text-[10px] uppercase tracking-widest font-medium transition-all cursor-pointer"
               >
-                {deleteLoading ? 'Suppression en cours...' : 'Supprimer du catalogue'}
-                          </button>
-            
-                          {deleteStatus && (
-                            <div className={`p-4 rounded-xl text-xs font-light tracking-wide mt-2 ${
-                              deleteStatus.success ? 'bg-green-50 text-green-700 border border-green-200' : 'bg-red-50 text-red-700 border border-red-200'
-                            }`}>
-                              {deleteStatus.message}
-                            </div>
-                          )}
-                        </form>
-                      </section>
-                    </div>
-                  </div>
-                </main>
-              );
+                {deleteLoading ? 'Suppression...' : 'Supprimer du catalogue'}
+              </button>
+
+              {deleteStatus && (
+                <div className={`p-4 rounded-xl text-xs font-light tracking-wide mt-2 ${
+                  deleteStatus.success ? 'bg-green-50 text-green-700 border border-green-200' : 'bg-red-50 text-red-700 border border-red-200'
+                }`}>
+                  {deleteStatus.message}
+                </div>
+              )}
+            </form>
+          </section>
+
+        </div>
+      </div>
+    </main>
+  );
+}
