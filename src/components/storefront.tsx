@@ -16,22 +16,18 @@ const MARQUEE_TEXT =
   " LIVRAISON DISPONIBLE SUR TOUT LE MAROC — COMMANDEZ DIRECTEMENT VIA WHATSAPP ✨ SOLDES D'ÉTÉ — JUSQU'À -30% SUR UNE SÉLECTION DE BIJOUX EXCLUSIFS ";
 
 function MarqueeBanner() {
-  // Respect prefers-reduced-motion: render the text statically instead of
-  // looping it, rather than forcing motion on people who've asked for less.
-  const shouldReduceMotion = useReducedMotion();
+  const MARQUEE_TEXT = " ✨ LIVRAISON DISPONIBLE SUR TOUT LE MAROC — COMMANDEZ DIRECTEMENT VIA WHATSAPP ✨ SOLDES D'ÉTÉ — JUSQU'À -30% SUR UNE SÉLECTION DE BIJOUX EXCLUSIFS ";
 
   return (
-    <div className="overflow-hidden border-b rule py-2" style={{ backgroundColor: '#FAF6F0' }}>
+    <div className="overflow-hidden border-b rule py-2 w-full" style={{ backgroundColor: '#FAF6F0' }}>
       <motion.div
-        className="flex w-max shrink-0 whitespace-nowrap text-xs font-light uppercase tracking-widest"
+        className="flex w-max shrink-0 whitespace-nowrap text-xs font-light uppercase tracking-widest flex-nowrap"
         style={{ color: '#2E2724' }}
-        animate={shouldReduceMotion ? undefined : { x: ['0%', '-50%'] }}
-        transition={
-          shouldReduceMotion ? undefined : { ease: 'linear', duration: 25, repeat: Infinity }
-        }
+        animate={{ x: ['0%', '-50%'] }}
+        transition={{ ease: 'linear', duration: 35, repeat: Infinity }}
       >
-        {[0, 1].map((copy) => (
-          <span key={copy} className="inline-block shrink-0">
+        {[0, 1, 2, 3].map((copy) => (
+          <span key={copy} className="inline-block shrink-0 px-4">
             {MARQUEE_TEXT}
           </span>
         ))}
