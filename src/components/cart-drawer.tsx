@@ -3,7 +3,7 @@
 import { Minus, Plus, Trash2, X } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import Image from 'next/image';
-import type { Product } from '@/data/products';
+import type { Product } from '@/lib/types';
 
 export type CartLine = { product: Product; quantity: number };
 type CartDrawerProps = { open: boolean; lines: CartLine[]; phone: string; onClose: () => void; onQuantityChange: (id: string, quantity: number) => void; onRemove: (id: string) => void; onCheckout: () => void };
