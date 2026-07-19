@@ -1,8 +1,12 @@
-import type { NextConfig } from 'next';
+import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  images: {
-    formats: ['image/avif', 'image/webp'],
+  /* Core framework config options */
+  experimental: {
+    // 🌟 FIXED: Modern framework method to increase server upload limits safely up to 10MB!
+    serverActions: {
+      bodySizeLimit: '10mb',
+    },
   },
 };
 

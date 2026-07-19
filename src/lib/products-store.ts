@@ -19,30 +19,27 @@ export async function getProducts(): Promise<Product[]> {
     if (error) throw error;
     if (!data) return [];
 
-    return data.map((row: any) => {
-      const productId = row["ID (SKU)"] || row.id;
-      return {
-        id: productId,
-        name: row["Nom du produit"] || row.name,
-        category: row["Catgorie (slug)"] || row["Catégorie (slug)"] || row.category,
-        price: Number(row["Prix (MAD)"] || row.price),
-        material: row["Matire"] || row["Matière"] || row.material || "Plaqué or 18 carats",
-        image: row["Chemin image"] || row["Chemin du produit"] || row.image || "/products/Logo.png",
-        sizes: row["Tailles disponibles"] || row.sizes 
-          ? (typeof (row["Tailles disponibles"] || row.sizes) === 'string' 
-              ? (row["Tailles disponibles"] || row.sizes).split(',').map((s: string) => s.trim()) 
-              : (row["Tailles disponibles"] || row.sizes)) 
-          : [],
-        priceEstimated: row["Prix estim ?"] === "Oui" || row["Prix estimé ?"] === "Oui" || row.priceEstimated === true
-      };
-    });
+    return data.map((row: any) => ({
+      id: row["ID (SKU)"] || row.id,
+      name: row["Nom du produit"] || row.name,
+      category: row["Catgorie (slug)"] || row["Catégorie (slug)"] || row.category,
+      price: Number(row["Prix (MAD)"] || row.price),
+      material: row["Matire"] || row["Matière"] || row.material || "Plaqué or 18 carats",
+      image: row["Chemin image"] || row["Chemin du produit"] || row.image || "/products/Logo.png",
+      sizes: row["Tailles disponibles"] || row.sizes 
+        ? (typeof (row["Tailles disponibles"] || row.sizes) === 'string' 
+            ? (row["Tailles disponibles"] || row.sizes).split(',').map((s: string) => s.trim()) 
+            : (row["Tailles disponibles"] || row.sizes)) 
+        : [],
+      priceEstimated: row["Prix estim ?"] === "Oui" || row["Prix estimé ?"] === "Oui" || row.priceEstimated === true
+    }));
   } catch (error) {
     console.error('Error fetching Supabase parameters:', error);
     return [];
   }
 }
 
-// 2. ADD PRODUCT + LARGE EMBEDDED DATA IMAGE COMPRESSION
+// 2. ADD PRODUCT + BASE64 IMAGE ENCODING
 export async function addProductEntry(formData: FormData): Promise<StoreActionResult> {
   try {
     const name = String(formData.get('name') ?? '').trim();
@@ -85,33 +82,36 @@ export async function addProductEntry(formData: FormData): Promise<StoreActionRe
   }
 }
 
-// 3. FIXED DELETION ROUTINE TARGETING EXACT EXCEL KEYS SIGNATURES
+// 3. FIXED DELETION SEARCH MATRIX ROUTINE
 export async function deleteProductEntry(identifier: string): Promise<StoreActionResult> {
   try {
     if (!identifier) return { success: false, message: 'Veuillez fournir un nom ou un ID valide.' };
     const searchTarget = identifier.trim().toLowerCase();
 
-    const allProducts = await getProducts();
-    const matchedItem = allProducts.find(
-      p => p.id.toLowerCase() === searchTarget || p.name.toLowerCase() === searchTarget
-    );
+    const { data: allProducts, error: fetchError } = await supabase.from('products').select('*');
+    if (fetchError) throw fetchError;
+
+    const matchedItem = allProducts?.find((row: any) => {
+      const idVal = String(row["ID (SKU)"] || '').toLowerCase();
+      const nameVal = String(row["Nom du produit"] || '').toLowerCase();
+      return idVal === searchTarget || nameVal === searchTarget;
+    });
 
     if (!matchedItem) {
       return { success: false, message: `Aucune pièce trouvée correspondant à "${identifier}".` };
     }
 
-    // 🌟 FIXED: Targets the exact structural column string key string name used by your CSV upload!
+    // 🌟 FIXED: Uses precise array matching filters so Supabase handles the deletion query perfectly!
     const { error } = await supabase
       .from('products')
       .delete()
-      .eq('ID (SKU)', matchedItem.id);
+      .match({ "ID (SKU)": matchedItem["ID (SKU)"] });
 
     if (error) {
-      console.error("Supabase Deletion Error Logs:", error);
-      return { success: false, message: `Détails Supabase: ${error.message || JSON.stringify(error)}` };
+      return { success: false, message: `Détails Supabase: ${error.message}` };
     }
     
-    return { success: true, message: `La pièce "${matchedItem.name}" a été définitivement supprimée.` };
+    return { success: true, message: `La pièce "${matchedItem["Nom du produit"]}" a été définitivement supprimée.` };
   } catch (error: any) {
     return { success: false, message: `Erreur lors de la suppression : ${error.message || error}` };
   }
