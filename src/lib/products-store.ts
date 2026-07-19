@@ -5,12 +5,11 @@ import type { Product } from '@/lib/types';
 
 export type StoreActionResult = { success: boolean; message: string };
 
-// Initialize Supabase Client
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
-// 1. FETCH FROM CLOUD DATABASE
+// 1. FETCH LIVE DATABASE ENTRIES
 export async function getProducts(): Promise<Product[]> {
   try {
     const { data, error } = await supabase
@@ -40,8 +39,7 @@ export async function getProducts(): Promise<Product[]> {
   }
 }
 
-// 2. ADD A NEW PRODUCT VIA THE ADMIN DASHBOARD FORM
-// Add a newly submitted piece via the Admin Dashboard Form using clean columns
+// 2. ADD PRODUCT + ENCODE IMAGE ATTACHMENT DYNAMICALLY
 export async function addProductEntry(formData: FormData): Promise<StoreActionResult> {
   try {
     const name = String(formData.get('name') ?? '').trim();
@@ -49,56 +47,68 @@ export async function addProductEntry(formData: FormData): Promise<StoreActionRe
     const price = Number(formData.get('price') ?? 0);
     const material = String(formData.get('material') ?? '').trim();
     const sizesStr = String(formData.get('sizes') ?? '').trim();
-    const customId = String(formData.get('id') ?? '').trim(); // Captures the exact ID typed in your form field box
+    const customId = String(formData.get('id') ?? '').trim();
+    const imageFile = formData.get('image') as File | null;
     
     if (!name || !price || !category) {
       return { success: false, message: 'Veuillez remplir les champs obligatoires (Nom, Prix, Catégorie).' };
     }
 
-    // Use the custom ID typed into the form box field, or auto-generate a fallback slug if left empty
     const finalId = customId || name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+    let imageUrl = '/products/Logo.png';
 
-    // 🌟 FIXED: Passes exact clean lowercase object properties to match your Supabase column definitions!
+    // Convert file attachments directly into a secure text string data token
+    if (imageFile && imageFile.size > 0) {
+      const buffer = await imageFile.arrayBuffer();
+      const base64String = Buffer.from(buffer).toString('base64');
+      imageUrl = `data:${imageFile.type};base64,${base64String}`;
+    }
+
     const { error } = await supabase.from('products').insert([{
       id: finalId,
       name: name,
       category: category,
       price: price,
       material: material,
-      image: '/products/Logo.png', // Default high-end asset placeholder
+      image: imageUrl,
       sizes: sizesStr,
-      price_estimated: "Non",
+      price_estimated: true,
       on_sale: "Non",
       is_new: "Oui"
     }]);
 
-    if (error) {
-      console.error("Supabase Error Details:", error);
-      return { success: false, message: `Erreur Supabase: ${error.message || JSON.stringify(error)}` };
-    }
-
-    return { success: true, message: `Succès ! La pièce "${name}" a été ajoutée à votre catalogue live.` };
+    if (error) throw error;
+    return { success: true, message: `Succès ! La pièce "${name}" est désormais visible sur votre boutique live avec son image.` };
   } catch (error: any) {
     return { success: false, message: `Erreur d'enregistrement : ${error.message || error}` };
   }
 }
 
-
-// 3. COMPLETE DELETION FROM THE CLOUD DATABASE
+// 3. FIXED DELETION SEARCH MATRIX LOOPS
 export async function deleteProductEntry(identifier: string): Promise<StoreActionResult> {
   try {
     if (!identifier) return { success: false, message: 'Veuillez fournir un nom ou un ID valide.' };
-    const searchTarget = identifier.trim();
+    const searchTarget = identifier.trim().toLowerCase();
 
+    // Fetch the list first to trace the targeted item
+    const allProducts = await getProducts();
+    const matchedItem = allProducts.find(
+      p => p.id.toLowerCase() === searchTarget || p.name.toLowerCase() === searchTarget
+    );
+
+    if (!matchedItem) {
+      return { success: false, message: `Aucune pièce trouvée correspondant à "${identifier}". Vérifiez l'orthographe.` };
+    }
+
+    // Execute absolute target deletion check across database row signatures
     const { error } = await supabase
       .from('products')
       .delete()
-      .or(`"ID (SKU)".ilike.${searchTarget},"Nom du produit".ilike.${searchTarget}`);
+      .eq('id', matchedItem.id);
 
     if (error) throw error;
-
-    return { success: true, message: 'La pièce a été retirée définitivement de votre base de données Supabase.' };
-  } catch (error) {
-    return { success: false, message: `Erreur lors de la suppression : ${error}` };
+    return { success: true, message: `La pièce "${matchedItem.name}" a été définitivement supprimée du catalogue live.` };
+  } catch (error: any) {
+    return { success: false, message: `Erreur lors de la suppression : ${error.message || error}` };
   }
 }
