@@ -9,12 +9,12 @@ import type { Category } from '@/lib/types';
 
 
 type NavbarProps = {
-  activeTab: ShowroomTab['label'];
+  activeTab: string;
   cartQuantity: number;
   mobileOpen: boolean;
-  onTabChange: (tab: ShowroomTab['label']) => void;
-  onCartOpen: () => void;
-  onMobileToggle: () => void;
+  onTabChange: (tab: string) => void;
+  onToggleMobile: () => void;
+  onOpenCart: () => void;
 };
 
 function FilterTabs({ activeTab, onTabChange, mobile = false }: Pick<NavbarProps, 'activeTab' | 'onTabChange'> & { mobile?: boolean }) {
@@ -24,7 +24,7 @@ function FilterTabs({ activeTab, onTabChange, mobile = false }: Pick<NavbarProps
       aria-label="Collections"
       role="tablist"
     >
-      {showroomTabs.map((tab) => {
+      {categories.map((tab) => {
         const active = activeTab === tab.label;
 
         return (
