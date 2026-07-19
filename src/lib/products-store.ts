@@ -63,17 +63,18 @@ export async function addProductEntry(formData: FormData): Promise<StoreActionRe
       imageUrl = `data:${imageFile.type};base64,${base64String}`;
     }
 
-    // 🌟 FIXED: Writes to your exact primary Excel-imported column row structure keys!
+    // 🌟 FIXED: Links up perfectly with your precise database tracking keys cache!
     const { error } = await supabase.from('products').insert([{
       "ID (SKU)": finalId,
       "Nom du produit": name,
-      "Catgorie (slug)": category,
+      "Catgorie (slug)": category, // Matches your clean table schema key
       "Prix (MAD)": price,
       "Matire": material,
       "Chemin image": imageUrl,
       "Tailles disponibles": sizesStr,
       "Prix estim ?": "Non"
     }]);
+
 
     if (error) throw error;
     return { success: true, message: `Succès ! La pièce "${name}" est désormais visible sur votre boutique live.` };
