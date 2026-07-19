@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import './globals.css';
+import '../styles/globals.css';
 import { CartProvider } from '@/context/CartContext';
 
 // Loaded via <link> in <head> rather than next/font/google so the build
