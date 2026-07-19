@@ -45,8 +45,8 @@ export function ProductCard({ product, index, onAdd }: ProductCardProps) {
           )}
         </motion.div>
 
-        {/* Dynamic Category Status Badge - matches yellow/gold badge in your picture */}
-        {product.priceEstimated && (
+        {/* Force the custom yellow-gold status badge to display on every item card */}
+        {true && (
           <motion.span 
             whileHover={{ y: -1 }}
             className="absolute top-4 left-4 bg-[#C5A880] text-[#FAF6F0] text-[9px] tracking-[0.2em] font-light uppercase px-3 py-1 rounded-full shadow-sm z-10 select-none"
@@ -54,6 +54,7 @@ export function ProductCard({ product, index, onAdd }: ProductCardProps) {
             SOLDE
           </motion.span>
         )}
+
 
         {/* Linear Luxury Dark Vignette Overlay */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent pointer-events-none transition-opacity duration-300 group-hover:from-black/60 z-0" />
