@@ -4,8 +4,12 @@ import { PasscodeGate } from '@/components/admin/PasscodeGate';
 
 export const dynamic = 'force-dynamic';
 
-export default function AdminDashboardLayout({ children }: { children: React.ReactNode }) {
-  const token = cookies().get(SESSION_COOKIE)?.value;
+// FIXED: Converted to an async Server Component to allow cookie resolution
+export default async function AdminDashboardLayout({ children }: { children: React.ReactNode }) {
+  
+  // FIXED: Await the async cookie store container before reading properties
+  const cookieStore = await cookies();
+  const token = cookieStore.get(SESSION_COOKIE)?.value;
 
   if (!isValidSessionToken(token)) {
     return <PasscodeGate />;
