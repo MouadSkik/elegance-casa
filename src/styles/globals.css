@@ -1,23 +1,19 @@
 @import 'tailwindcss';
-@layer base;
-@layer components;
-@layer utilities;
 
 @theme {
-  /* Applying your exact custom champagne-cream hex background color */
-  --color-linen: #f4ead0;
-  --color-linen-deep: #e8dfc5;
-  --color-ink: #2E2724;
-  --color-ink-soft: #4A3E3B;
+  /* Your exact pristine ivory-cream background canvas color */
+  --color-linen: #fcfaf4;
+  --color-linen-deep: #f2ebd4;
+  --color-ink: #111111;
+  --color-ink-soft: #4a453e;
   --color-gold: #c5a880;
   --color-gold-deep: #a8845c;
-  --color-hairline: #decfa9;
+  --color-hairline: #e3d9bf;
 
-  /* Stylish premium editorial fonts */
-  --font-display: 'Cormorant Garamond', ui-serif, Georgia, serif;
+  /* Premium typography mappings from your Lovable app */
+  --font-display: 'Playfair Display', ui-serif, Georgia, serif;
   --font-sans: 'Jost', ui-sans-serif, system-ui, sans-serif;
 }
-
 
 html {
   scroll-behavior: smooth;
@@ -29,61 +25,10 @@ body {
   font-family: var(--font-sans);
 }
 
-.font-display {
-  font-family: var(--font-display);
-}
-
-/* Hairline rule used throughout as a quiet structural device */
-.rule {
-  border-color: var(--color-hairline);
-}
-
-/* Tracked-out small caps used for eyebrows and category chrome */
-.tracked-caps {
-  text-transform: uppercase;
-  letter-spacing: 0.22em;
-}
-
-::selection {
-  background: var(--color-gold);
-  color: var(--color-linen);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.001ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.001ms !important;
-    scroll-behavior: auto !important;
-  }
-}
-
-/* Focus visibility kept crisp against the linen background */
-:focus-visible {
-  outline: 2px solid var(--color-gold-deep);
-  outline-offset: 3px;
-}
-
-/* Full-width golden pill CTA — the product page's "Commander via WhatsApp" button */
-.pill-gold {
-  background: linear-gradient(135deg, var(--color-gold) 0%, var(--color-gold-deep) 100%);
-  color: var(--color-linen);
-  transition: filter 0.2s ease;
-}
-.pill-gold:hover {
-  filter: brightness(1.06);
-}
-
-/* Rose-gold outline button — footer newsletter "Envoyer" trigger */
-.rose-gold-btn {
-  border: 1px solid #d4a393;
-  color: #d4a393;
-  border-radius: 9999px;
-  transition: background-color 0.2s ease, color 0.2s ease;
-}
-.rose-gold-btn:hover {
-  background-color: #d4a393;
-  color: var(--color-linen);
+/* 🎨 The Degrading / Gradient Text Effect for "choisies" */
+.text-degrade-gold {
+  background: linear-gradient(135deg, #c5a880 0%, #a8845c 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
