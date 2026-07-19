@@ -41,6 +41,7 @@ export async function getProducts(): Promise<Product[]> {
 }
 
 // 2. ADD A NEW PRODUCT VIA THE ADMIN DASHBOARD FORM
+// Add a newly submitted piece via the Admin Dashboard Form using clean columns
 export async function addProductEntry(formData: FormData): Promise<StoreActionResult> {
   try {
     const name = String(formData.get('name') ?? '').trim();
@@ -48,31 +49,40 @@ export async function addProductEntry(formData: FormData): Promise<StoreActionRe
     const price = Number(formData.get('price') ?? 0);
     const material = String(formData.get('material') ?? '').trim();
     const sizesStr = String(formData.get('sizes') ?? '').trim();
+    const customId = String(formData.get('id') ?? '').trim(); // Captures the exact ID typed in your form field box
     
     if (!name || !price || !category) {
       return { success: false, message: 'Veuillez remplir les champs obligatoires (Nom, Prix, Catégorie).' };
     }
 
-    const id = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+    // Use the custom ID typed into the form box field, or auto-generate a fallback slug if left empty
+    const finalId = customId || name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
 
+    // 🌟 FIXED: Passes exact clean lowercase object properties to match your Supabase column definitions!
     const { error } = await supabase.from('products').insert([{
-      "ID (SKU)": id,
-      "Nom du produit": name,
-      "Catgorie (slug)": category,
-      "Prix (MAD)": price,
-      "Matire": material,
-      "Chemin image": '/products/Logo.png',
-      "Tailles disponibles": sizesStr,
-      "Prix estim ?": "Non"
+      id: finalId,
+      name: name,
+      category: category,
+      price: price,
+      material: material,
+      image: '/products/Logo.png', // Default high-end asset placeholder
+      sizes: sizesStr,
+      price_estimated: "Non",
+      on_sale: "Non",
+      is_new: "Oui"
     }]);
 
-    if (error) throw error;
+    if (error) {
+      console.error("Supabase Error Details:", error);
+      return { success: false, message: `Erreur Supabase: ${error.message || JSON.stringify(error)}` };
+    }
 
-    return { success: true, message: `Succès ! La pièce "${name}" est enregistrée.` };
-  } catch (error) {
-    return { success: false, message: `Erreur d'enregistrement : ${error}` };
+    return { success: true, message: `Succès ! La pièce "${name}" a été ajoutée à votre catalogue live.` };
+  } catch (error: any) {
+    return { success: false, message: `Erreur d'enregistrement : ${error.message || error}` };
   }
 }
+
 
 // 3. COMPLETE DELETION FROM THE CLOUD DATABASE
 export async function deleteProductEntry(identifier: string): Promise<StoreActionResult> {
