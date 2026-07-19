@@ -1,7 +1,7 @@
 @import 'tailwindcss';
 
 @theme {
-  /* Your exact pristine ivory-cream background canvas color */
+  /* Premium Ivory-Cream Theme Palette from Lovable Screenshot */
   --color-linen: #fcfaf4;
   --color-linen-deep: #f2ebd4;
   --color-ink: #111111;
@@ -10,7 +10,7 @@
   --color-gold-deep: #a8845c;
   --color-hairline: #e3d9bf;
 
-  /* Premium typography mappings from your Lovable app */
+  /* Premium Editorial Font Sets Configuration Mapping */
   --font-display: 'Playfair Display', ui-serif, Georgia, serif;
   --font-sans: 'Jost', ui-sans-serif, system-ui, sans-serif;
 }
@@ -25,7 +25,7 @@ body {
   font-family: var(--font-sans);
 }
 
-/* 🎨 The Degrading / Gradient Text Effect for "choisies" */
+/* 🎨 Master Color Gradient Degradation Class for Text Overlays */
 .text-degrade-gold {
   background: linear-gradient(135deg, #c5a880 0%, #a8845c 100%);
   -webkit-background-clip: text;
