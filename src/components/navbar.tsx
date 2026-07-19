@@ -8,14 +8,19 @@ import { categories } from '@/data/categories';
 import type { Category } from '@/lib/types';
 
 
+// 1. Update your NavbarProps type definition block to look exactly like this:
 type NavbarProps = {
   activeTab: string;
   cartQuantity: number;
   mobileOpen: boolean;
   onTabChange: (tab: string) => void;
-  onToggleMobile: () => void;
-  onOpenCart: () => void;
+  onCartOpen: () => void;       // <-- Fixed name match
+  onMobileToggle: () => void;   // <-- Fixed name match
 };
+
+// ... (leave any code between them untouched) ...
+
+
 
 function FilterTabs({ activeTab, onTabChange, mobile = false }: Pick<NavbarProps, 'activeTab' | 'onTabChange'> & { mobile?: boolean }) {
   return (
@@ -55,7 +60,7 @@ function FilterTabs({ activeTab, onTabChange, mobile = false }: Pick<NavbarProps
   );
 }
 
-export function Navbar({ activeTab, cartQuantity, mobileOpen, onTabChange, onCartOpen, onMobileToggle }: NavbarProps) {
+export default function Navbar({ activeTab, cartQuantity, mobileOpen, onTabChange, onCartOpen, onMobileToggle }: NavbarProps) {
   return (
     <header className="sticky top-0 z-40 border-b border-charcoal/10 bg-cream/82 backdrop-blur-2xl">
       <div className="mx-auto grid max-w-[1600px] grid-cols-[1fr_auto_1fr] items-center px-5 py-4 md:px-10">
