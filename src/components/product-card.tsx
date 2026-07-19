@@ -1,83 +1,72 @@
 'use client';
 
-import { ArrowUpRight, Plus } from 'lucide-react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
+import Link from 'next/link';
 import type { Product } from '@/lib/types';
+import { Plus } from 'lucide-react';
 
-type ProductCardProps = { product: Product; index: number; onAdd: (product: Product) => void; onOrder: (product: Product) => void };
+type ProductCardProps = {
+  product: Product;
+  index: number;
+  onAdd?: (product: Product) => void;
+  onOrder?: (product: Product) => void;
+};
 
-export function ProductCard({ product, index, onAdd, onOrder }: ProductCardProps) {
+export function ProductCard({ product, index, onAdd }: ProductCardProps) {
   return (
     <motion.article
-      layout
-      initial={{ opacity: 0, y: 34 }}
+      initial={{ opacity: 0, y: 40 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.2 }}
-      transition={{ duration: 0.72, delay: Math.min(index, 10) * 0.05, ease: [0.16, 1, 0.3, 1] }}
-      whileHover={{ y: -8 }}
-      className="group cursor-pointer"
-      onClick={() => onOrder(product)}
+      viewport={{ once: true, margin: "-10% 0px -10% 0px" }}
+      transition={{ duration: 0.8, delay: (index % 4) * 0.1, ease: [0.215, 0.61, 0.355, 1] }}
+      className="group flex flex-col justify-between overflow-hidden bg-transparent"
     >
-      <motion.div
-        className="relative aspect-[4/5] overflow-hidden rounded-[2rem] border border-charcoal/8 bg-[#f2ede5] shadow-[0_24px_70px_rgba(28,26,23,0.06)]"
-        whileHover={{ borderColor: 'rgba(197,168,128,0.72)' }}
-        transition={{ duration: 0.4 }}
-      >
-        <motion.div
-          className="absolute inset-0"
-          whileHover={{ scale: 1.045 }}
-          transition={{ duration: 0.95, ease: [0.22, 1, 0.36, 1] }}
+      <Link href={`/product/${product.id}`} className="block relative overflow-hidden rounded-[2rem] aspect-[4/5] bg-linen-deep shadow-[0_16px_40px_rgba(28,26,23,0.04)]">
+        <motion.div 
+          className="relative w-full h-full"
+          whileHover={{ scale: 1.04 }}
+          transition={{ duration: 0.8, ease: [0.25, 1, 0.5, 1] }}
         >
-          <Image src={product.image as string} alt={product.name} fill sizes="(max-width: 767px) 100vw, (max-width: 1279px) 50vw, 33vw" className="object-cover" />
-
+          {product.image ? (
+            <Image 
+              src={product.image} 
+              alt={product.name} 
+              fill 
+              sizes="(max-width: 767px) 50vw, 25vw" 
+              className="object-cover" 
+            />
+          ) : (
+            <div className="w-full h-full bg-[#f2ede5]" />
+          )}
         </motion.div>
 
-        <div className="absolute inset-0 bg-[linear-gradient(to_top,rgba(28,26,23,0.66),rgba(28,26,23,0.08)_40%,transparent_75%)]" />
+        {/* Premium Dark Gradient Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/5 to-transparent pointer-events-none transition-opacity duration-300 group-hover:from-black/70" />
 
-        <div className="absolute left-4 top-4 flex flex-col gap-2">
-          {product.priceEstimated && (
-            <motion.span
-              className="inline-flex w-fit items-center rounded-full bg-gold px-3 py-1 text-[10px] font-medium tracking-[0.2em] text-charcoal shadow-[0_10px_24px_rgba(28,26,23,0.14)]"
-              whileHover={{ y: -2 }}
-            >
-              SOLDE
-            </motion.span>
-          )}
+        <div className="absolute inset-x-0 bottom-0 p-5 text-white z-10">
+          <p className="text-[10px] uppercase tracking-[0.22em] text-[#C5A880] font-light">{product.category}</p>
+          <h3 className="mt-1 font-display text-xl leading-tight text-white/95">{product.name}</h3>
         </div>
+      </Link>
 
-        <motion.span
-          initial={{ opacity: 0, scale: 0.88, y: 10 }}
-          whileHover={{ opacity: 1, scale: 1, y: 0 }}
-          className="absolute bottom-4 right-4 grid h-11 w-11 place-items-center rounded-full border border-cream/20 bg-cream/92 text-charcoal shadow-[0_14px_28px_rgba(28,26,23,0.16)] backdrop-blur-md"
-        >
-          <ArrowUpRight size={18} />
-        </motion.span>
-
-        <div className="absolute inset-x-0 bottom-0 p-5 text-cream">
-          <p className="text-[10px] uppercase tracking-[0.22em] text-gold/90">{product.category}</p>
-          <h3 className="mt-2 font-display text-2xl leading-[1.05]">{product.name}</h3>
-        </div>
-      </motion.div>
-
-      <div className="flex items-end justify-between gap-4 px-1 pt-5">
+      <div className="flex items-center justify-between gap-4 px-2 pt-4">
         <div className="min-w-0 flex-1">
-          <p className="text-[10px] uppercase tracking-[0.2em] text-charcoal/42">Prix</p>
-          <p className="mt-1 text-lg font-medium text-charcoal">{product.price} MAD</p>
+          <p className="text-[10px] uppercase tracking-[0.2em] text-neutral-400 font-light">Prix</p>
+          <p className="mt-0.5 text-base font-medium text-[#2E2724]">{product.price} MAD</p>
         </div>
 
-        <div className="flex shrink-0 items-center gap-2">
-          <button
-            onClick={(event) => {
-              event.stopPropagation();
-              onAdd(product);
-            }}
-            className="grid h-10 w-10 place-items-center rounded-full border border-charcoal/12 bg-cream/80 text-charcoal transition hover:border-gold/70 hover:bg-gold"
-            aria-label={`Ajouter ${product.name} au panier`}
-          >
-            <Plus size={16} />
-          </button>
-        </div>
+        <button
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            onAdd?.(product);
+          }}
+          className="grid h-9 w-9 place-items-center rounded-full border border-neutral-200 bg-white/80 text-[#2E2724] transition-all duration-300 hover:border-[#D4A393] hover:bg-[#D4A393] hover:text-white"
+          aria-label="Ajouter au panier"
+        >
+          <Plus size={15} strokeWidth={1.5} />
+        </button>
       </div>
     </motion.article>
   );
