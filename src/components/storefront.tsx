@@ -11,27 +11,32 @@ function scrollToCatalogue() {
   document.getElementById('catalogue')?.scrollIntoView({ behavior: 'smooth' });
 }
 
-/* 1. RESTORED INFINITE MOVING MARQUEE BANNER */
+
+/* 1. INFINITE HORIZONTAL MOVING MARQUEE ANNOUNCEMENT TEXT STRIP LAYER PLUGIN */
 export function MarqueeBanner() {
   const MARQUEE_TEXT = " ✨ LIVRAISON DISPONIBLE SUR TOUT LE MAROC — COMMANDEZ DIRECTEMENT VIA WHATSAPP ✨ SOLDES D'ÉTÉ — JUSQU'À -30% SUR UNE SÉLECTION DE BIJOUX EXCLUSIFS ";
 
   return (
-    <div className="overflow-hidden border-b border-[#e3d9bf]/30 py-2.5 w-full select-none relative z-50 bg-[#FAF6F0]">
-      <motion.div
-        className="flex w-max shrink-0 whitespace-nowrap text-[11px] font-light uppercase tracking-[0.24em] flex-nowrap"
-        style={{ color: '#2E2724' }}
-        animate={{ x: ['0%', '-50%'] }}
-        transition={{ ease: 'linear', duration: 35, repeat: Infinity }}
-      >
-        {[0, 1, 2, 3].map((copy) => (
-          <span key={copy} className="inline-block shrink-0 px-6">
-            {MARQUEE_TEXT}
-          </span>
-        ))}
-      </motion.div>
-    </div>
+    <>
+      {/* FIXED: Swapped background properties to lock in your exact #f2e8d1 custom color token parameter */}
+      <div className="overflow-hidden border-b border-[#e3d9bf]/20 py-2.5 w-full select-none relative z-50 bg-[#f2e8d1]">
+        <motion.div
+          className="flex w-max shrink-0 whitespace-nowrap text-[11px] font-medium uppercase tracking-[0.24em] flex-nowrap"
+          style={{ color: '#2E2724' }}
+          animate={{ x: ['0%', '-50%'] }}
+          transition={{ ease: 'linear', duration: 35, repeat: Infinity }}
+        >
+          {[0, 1, 2, 3].map((copy) => (
+            <span key={copy} className="inline-block shrink-0 px-6">
+              {MARQUEE_TEXT}
+            </span>
+          ))}
+        </motion.div>
+      </div>
+    </>
   );
 }
+
 
 /* 2. MINIMALIST NAVIGATION HEADER */
 function FloatingNavbar() {

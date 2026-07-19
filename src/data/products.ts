@@ -13,15 +13,6 @@ import type { Product } from '@/lib/types';
 //    that look off.
 export const products: Product[] = [
   {
-    id: 'bagues-001',
-    name: 'Bague Royale Zirée',
-    category: 'bagues',
-    price: 690,
-    material: 'Plaqué or 18 carats',
-    sizes: ["52", "54", "56", "58"],
-    image: null,
-  },
-  {
     id: 'bagues-002',
     name: 'Bague Solitaire Luna',
     category: 'bagues',
@@ -137,15 +128,6 @@ export const products: Product[] = [
     material: 'Plaqué or 18 carats',
     sizes: ["50", "52", "54", "56"],
     image: '/products/bagues/bague-emeraude-halo.jpg',
-  },
-  {
-    id: 'bagues-015',
-    name: 'Chevalière Pavé Doré',
-    category: 'bagues',
-    price: 820,
-    material: 'Plaqué or 18 carats',
-    sizes: ["54", "56", "58", "60"],
-    image: null,
   },
   {
     id: 'bagues-016',
@@ -291,15 +273,6 @@ export const products: Product[] = [
     material: 'Plaqué or 18 carats',
     sizes: [],
     image: '/products/boucles/boucles-cuff-etoiles.jpg',
-  },
-  {
-    id: 'boucles-008',
-    name: 'Créoles Laurier',
-    category: 'boucles',
-    price: 25,
-    material: 'Plaqué or 18 carats',
-    sizes: [],
-    image: null,
   },
   {
     id: 'boucles-009',
@@ -716,15 +689,6 @@ export const products: Product[] = [
     image: '/products/bracelets/bracelet-jonc-arabesque-miroir.png',
   },
   {
-    id: 'bracelets-011',
-    name: 'Manchette Arabesque Miroir',
-    category: 'bracelets',
-    price: 180,
-    material: 'Plaqué or 18 carats',
-    sizes: [],
-    image: null,
-  },
-  {
     id: 'bracelets-012',
     name: 'Bracelet Gravé Arabesque',
     category: 'bracelets',
@@ -750,15 +714,6 @@ export const products: Product[] = [
     material: 'Plaqué or 18 carats',
     sizes: [],
     image: '/products/bracelets/bracelet-bambou-relief.png',
-  },
-  {
-    id: 'bracelets-015',
-    name: 'Bracelet Honeycomb Pavé',
-    category: 'bracelets',
-    price: 100,
-    material: 'Plaqué or 18 carats',
-    sizes: [],
-    image: null,
   },
   {
     id: 'bracelets-016',
