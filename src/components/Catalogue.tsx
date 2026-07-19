@@ -81,8 +81,15 @@ export function Catalogue() {
 
         <div className="grid grid-cols-2 gap-x-5 gap-y-10 md:grid-cols-3 lg:grid-cols-4">
           {pageItems.map((product, i) => (
-            <ProductCard key={product.id} product={product} index={i} />
-          ))}
+            <ProductCard 
+            key={product.id} 
+            product={product} 
+            index={i} 
+            onAdd={() => {}} 
+            onOrder={() => {}} 
+            />
+            ))}
+
         </div>
 
         {totalPages > 1 && (
