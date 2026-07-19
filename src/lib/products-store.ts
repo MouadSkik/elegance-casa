@@ -1,30 +1,13 @@
-import { promises as fs } from 'fs';
-import path from 'path';
-import { categories } from '@/data/categories';
+import { createClient } from '@supabase/supabase-js';
 import type { Product } from '@/lib/types';
 
-// This module does real filesystem I/O (fs, path) and must only ever be
-// imported from Server Components, Route Handlers, or Server Actions —
-// never from a file marked 'use client'. Client components should receive
-// products as props instead (see app/page.tsx).
+export type StoreActionResult = { success: boolean; message: string };
 
-const DATA_FILE = path.join(process.cwd(), 'src/data/products.json');
-const PUBLIC_DIR = path.join(process.cwd(), 'public');
+// Connects your live code directly to your Supabase Cloud Database metrics
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
+export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
-const VALID_CATEGORIES = new Set<string>(categories.map((c) => c.slug));
-
-const ALLOWED_IMAGE_TYPES: Record<string, string> = {
-  'image/png': 'png',
-  'image/jpeg': 'jpg',
-  'image/webp': 'webp',
-};
-const MAX_IMAGE_BYTES = 8 * 1024 * 1024; // 8 MB
-
-export interface StoreActionResult {
-  success: boolean;
-  message: string;
-  product?: Product;
-}
 
 // --- Reads ---
 
