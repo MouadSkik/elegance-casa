@@ -4,7 +4,9 @@ import Link from 'next/link';
 import { Menu, ShoppingBag, X } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import Image from 'next/image';
-import { showroomTabs, type ShowroomTab } from '@/data/products';
+import { categories } from '@/data/categories';
+import type { Category } from '@/lib/types';
+
 
 type NavbarProps = {
   activeTab: ShowroomTab['label'];
