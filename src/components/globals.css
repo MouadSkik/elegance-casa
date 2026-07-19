@@ -1,0 +1,83 @@
+@import 'tailwindcss';
+
+@theme {
+  --color-linen: #faf6f0;
+  --color-linen-deep: #f3ebe0;
+  --color-ink: #1c1a17;
+  --color-ink-soft: #46403a;
+  --color-gold: #c5a880;
+  --color-gold-deep: #a8845c;
+  --color-hairline: #e4d9c9;
+
+  --font-display: 'Cormorant Garamond', ui-serif, Georgia, serif;
+  --font-sans: 'Jost', ui-sans-serif, system-ui, sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--color-linen);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+}
+
+.font-display {
+  font-family: var(--font-display);
+}
+
+/* Hairline rule used throughout as a quiet structural device */
+.rule {
+  border-color: var(--color-hairline);
+}
+
+/* Tracked-out small caps used for eyebrows and category chrome */
+.tracked-caps {
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+}
+
+::selection {
+  background: var(--color-gold);
+  color: var(--color-linen);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Focus visibility kept crisp against the linen background */
+:focus-visible {
+  outline: 2px solid var(--color-gold-deep);
+  outline-offset: 3px;
+}
+
+/* Full-width golden pill CTA — the product page's "Commander via WhatsApp" button */
+.pill-gold {
+  background: linear-gradient(135deg, var(--color-gold) 0%, var(--color-gold-deep) 100%);
+  color: var(--color-linen);
+  transition: filter 0.2s ease;
+}
+.pill-gold:hover {
+  filter: brightness(1.06);
+}
+
+/* Rose-gold outline button — footer newsletter "Envoyer" trigger */
+.rose-gold-btn {
+  border: 1px solid #d4a393;
+  color: #d4a393;
+  border-radius: 9999px;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+.rose-gold-btn:hover {
+  background-color: #d4a393;
+  color: var(--color-linen);
+}

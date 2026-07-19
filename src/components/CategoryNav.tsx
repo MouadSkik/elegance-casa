@@ -10,17 +10,9 @@ interface Props {
 }
 
 export function CategoryNav({ categories, active, onChange }: Props) {
-  const allowedOrder: CategorySlug[] = ['bagues', 'boucles', 'chaines', 'bracelets', 'parures'];
   const items: { slug: CategorySlug | 'tout'; label: string; sub: string }[] = [
-    { slug: 'tout', label: 'TOUS', sub: 'All' },
-    ...allowedOrder
-      .map((slug) => categories.find((category) => category.slug === slug))
-      .filter((category): category is Category => Boolean(category))
-      .map((category) => ({
-        slug: category.slug,
-        label: category.label.toUpperCase(),
-        sub: category.sub,
-      })),
+    { slug: 'tout', label: 'Tout', sub: 'All' },
+    ...categories.map((c) => ({ slug: c.slug, label: c.label, sub: c.sub })),
   ];
 
   return (
