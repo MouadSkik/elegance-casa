@@ -6,7 +6,7 @@ import { categories } from '@/data/categories';
 import { products } from '@/data/products';
 import type { CategorySlug } from '@/lib/types';
 import { CategoryNav } from './CategoryNav';
-import { ProductCard } from './ProductCard';
+import { ProductCard } from './product-card';
 
 const PAGE_SIZE = 12;
 
