@@ -10,13 +10,14 @@ import { ProductCard } from './product-card';
 
 const PAGE_SIZE = 12;
 
-export function Catalogue() {
+// 🌟 FIXED: Your function signature now cleanly receives your live Supabase database elements!
+export function Catalogue({ initialProducts = [] }: { initialProducts?: any[] }) {
   const [active, setActive] = useState<CategorySlug | 'tout'>('tout');
   const [page, setPage] = useState(1);
 
   const populatedCategories = useMemo(
-    () => categories.filter((c) => products.some((p) => p.category === c.slug)),
-    []
+    () => categories.filter((c) => initialProducts.some((p) => p.category === c.slug)),
+    [initialProducts]
   );
 
   const activeCategory = useMemo(
@@ -24,10 +25,13 @@ export function Catalogue() {
     [active, populatedCategories]
   );
 
+    // 🌟 FIXED: Filters your live cloud database array items deck smoothly!
   const items = useMemo(
-    () => (active === 'tout' ? products : products.filter((p) => p.category === active)),
-    [active]
+    () => (active === 'tout' ? initialProducts : initialProducts.filter((p) => p.category === active)),
+    [active, initialProducts]
   );
+
+
 
   const totalPages = Math.max(1, Math.ceil(items.length / PAGE_SIZE));
   const pageItems = items.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
