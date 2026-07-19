@@ -2,29 +2,24 @@ import type { Metadata } from 'next';
 import '../styles/globals.css';
 import { CartProvider } from '@/context/CartContext';
 
-// Loaded via <link> in <head> rather than next/font/google so the build
-// never depends on reaching fonts.googleapis.com — swap for next/font/google
-// or self-hosted files if you'd prefer build-time font optimization.
 export const metadata: Metadata = {
-  title: 'Élégance Casa — Joaillerie fine',
-  description:
-    "Élégance Casa, joaillerie fine à Casablanca. Bagues, chaînes, bracelets, parures et coffrets façonnés pour durer.",
+  title: 'Élégance Casa — Haute Joaillerie',
+  description: 'Showroom privé de bijoux et accessoires exclusifs, Casablanca.',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="fr">
-      <link href="https://googleapis.com" rel="stylesheet" />
+    <html lang="fr" className="scroll-smooth">
       <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Jost:wght@300;400;500;600&display=swap"
-          rel="stylesheet"
-        />
+        {/* CRITICAL FONT LINK MATRIX INJECTION — Unlocks Playfair Display and Jost */}
+        <link rel="preconnect" href="https://googleapis.com" />
+        <link rel="preconnect" href="https://gstatic.com" crossOrigin="anonymous" />
+        <link href="https://googleapis.com/css2?family=Jost:ital,wght@0,100..400;1,100..400&family=Playfair+Display:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet" />
       </head>
-      <body>
-        <CartProvider>{children}</CartProvider>
+      <body className="antialiased selection:bg-[#c5a880]/30">
+        <CartProvider>
+          {children}
+        </CartProvider>
       </body>
     </html>
   );

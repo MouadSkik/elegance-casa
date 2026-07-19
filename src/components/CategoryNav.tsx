@@ -1,54 +1,57 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import type { Category, CategorySlug } from '@/lib/types';
+import type { Category } from '@/lib/types';
 
-interface Props {
+type CategoryNavProps = {
   categories: Category[];
-  active: CategorySlug | 'tout';
-  onChange: (slug: CategorySlug | 'tout') => void;
-}
+  active: string;
+  onChange: (slug: any) => void;
+};
 
-export function CategoryNav({ categories, active, onChange }: Props) {
-  const items: { slug: CategorySlug | 'tout'; label: string; sub: string }[] = [
-    { slug: 'tout', label: 'Tout', sub: 'All' },
-    ...categories.map((c) => ({ slug: c.slug, label: c.label, sub: c.sub })),
-  ];
+export function CategoryNav({ categories, active, onChange }: CategoryNavProps) {
+  // Combine custom database entries with a clean "TOUS" fallback index anchor
+  const items = [{ slug: 'tout', label: 'Tous les produits', sub: 'All Collections' }, ...categories];
 
   return (
-    <nav
-      aria-label="Filtrer par catégorie"
-      className="sticky top-[73px] z-30 border-b rule bg-linen/95 backdrop-blur-md"
-    >
-      <ul className="mx-auto flex max-w-6xl gap-1 overflow-x-auto px-6 py-3 md:justify-center md:gap-2">
-        {items.map((item) => {
-          const isActive = active === item.slug;
-          return (
-            <li key={item.slug} className="shrink-0">
+    <nav className="w-full bg-[#fcfaf4] border-b border-[#e3d9bf]/30 py-8 relative z-20">
+      <div className="max-w-7xl mx-auto px-6 overflow-x-auto scrollbar-none">
+        <div className="flex items-center justify-center min-w-max md:min-w-0 space-x-12 lg:space-x-16 mx-auto">
+          {items.map((item) => {
+            const isCurrent = active === item.slug;
+            return (
               <button
+                key={item.slug}
                 onClick={() => onChange(item.slug)}
-                className="relative px-4 py-2 text-left transition-colors"
+                className="group relative flex flex-col items-center py-2 transition-all duration-500 focus:outline-none cursor-pointer text-center"
               >
-                <span
-                  className={`tracked-caps block text-xs transition-colors ${
-                    isActive ? 'text-gold-deep' : 'text-ink-soft hover:text-ink'
-                  }`}
-                >
+                {/* French primary tracking tag - expanded text weights */}
+                <span className={`font-sans text-[11px] font-medium tracking-[0.26em] uppercase transition-colors duration-500 ${
+                  isCurrent ? 'text-[#111111]' : 'text-neutral-400 group-hover:text-[#111111]'
+                }`}>
                   {item.label}
                 </span>
-                <span className="block text-[10px] text-ink-soft/60">{item.sub}</span>
-                {isActive && (
-                  <motion.span
-                    layoutId="category-underline"
-                    className="absolute -bottom-[13px] left-2 right-2 h-[2px] bg-gold"
-                    transition={{ type: 'spring', stiffness: 380, damping: 32 }}
+
+                {/* Secondary decorative layout label subtitle - cursive styling accent */}
+                <span className={`font-display text-[12px] italic mt-1 font-light tracking-wide transition-colors duration-500 ${
+                  isCurrent ? 'text-[#c5a880]' : 'text-neutral-400/50 group-hover:text-[#c5a880]/70'
+                }`}>
+                  {item.sub}
+                </span>
+
+                {/* Flowing animated gold active indicator line token */}
+                {isCurrent && (
+                  <motion.div
+                    layoutId="activeTabUnderline"
+                    className="absolute bottom-0 h-[1px] w-8 bg-[#c5a880]"
+                    transition={{ type: 'spring', stiffness: 300, damping: 32 }}
                   />
                 )}
               </button>
-            </li>
-          );
-        })}
-      </ul>
+            );
+          })}
+        </div>
+      </div>
     </nav>
   );
 }

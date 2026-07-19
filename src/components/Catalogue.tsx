@@ -46,37 +46,43 @@ export function Catalogue() {
     if (page > totalPages) setPage(totalPages);
   }, [page, totalPages]);
 
-  return (
-    <section id="catalogue" className="bg-[#fcfaf4]">
+    return (
+    <section id="catalogue" className="bg-[#fcfaf4] transition-colors duration-500">
+      {/* Category Selection Component Navigation Slider */}
       <CategoryNav categories={populatedCategories} active={active} onChange={handleCategoryChange} />
 
-      <div className="mx-auto max-w-6xl px-6 py-10 md:py-16">
+      {/* Heavy Editorial Whitespace Padding Blocks - py-24 md:py-36 */}
+      <div className="mx-auto max-w-7xl px-8 py-24 md:py-36">
         <motion.div
           key={active}
-          initial={{ opacity: 0, y: 10 }}
+          initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: [0.25, 1, 0.5, 1] }}
-          className="mb-12 flex flex-col gap-4 pb-4 md:flex-row md:items-end md:justify-between"
+          transition={{ duration: 0.8, ease: [0.25, 1, 0.5, 1] }}
+          className="mb-20 flex flex-col gap-6 md:flex-row md:items-end md:justify-between border-b border-[#e3d9bf]/20 pb-12"
         >
-          <div>
-            <p className="text-[10px] tracking-[0.24em] uppercase text-[#a8845c] font-light">
-              {activeCategory ? activeCategory.sub : 'Maison'}
+          <div className="space-y-3">
+            <p className="font-sans text-[10px] tracking-[0.3em] uppercase text-[#a8845c] font-light">
+              {activeCategory ? activeCategory.sub : 'Maison Royale'}
             </p>
-            <h2 className="font-display text-3xl font-light italic text-[#2E2724] tracking-wide mt-2 md:text-4xl">
-              {activeCategory ? activeCategory.label : 'Tous les produits'}
+            <h2 className="font-display text-4xl md:text-5xl lg:text-6xl font-light text-[#111111] tracking-wide leading-tight">
+              {activeCategory ? activeCategory.label : 'Tous les produits'}{' '}
+              <span className="text-degrade-gold italic font-normal">sélectionnés</span>
             </h2>
           </div>
-          <p className="max-w-sm text-xs font-light leading-relaxed text-neutral-500">
+          
+          <p className="max-w-md font-sans text-[13px] font-light leading-relaxed text-neutral-400 md:px-6">
             {activeCategory
               ? activeCategory.description
-              : "L'ensemble de notre collection, réunie en une seule vitrine."}
+              : "L'ensemble de notre collection fine, ordonnée avec soin en une vitrine unique."}
           </p>
-          <p className="text-[10px] tracking-[0.2em] uppercase text-neutral-400 font-light shrink-0">
-            {items.length.toString().padStart(2, '0')} pièces
+          
+          <p className="font-sans text-[10px] tracking-[0.24em] uppercase text-neutral-300 font-light shrink-0">
+            {items.length.toString().padStart(2, '0')} pièces exclusives
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-2 gap-x-5 gap-y-12 md:grid-cols-3 lg:grid-cols-4">
+        {/* Product Grid Card Elements Deck System */}
+        <div className="grid grid-cols-2 gap-x-6 gap-y-16 md:grid-cols-3 lg:grid-cols-4">
           {pageItems.map((product, i) => (
             <ProductCard key={product.id} product={product} index={i} />
           ))}
@@ -88,6 +94,7 @@ export function Catalogue() {
       </div>
     </section>
   );
+
 }
 
 function Pagination({
