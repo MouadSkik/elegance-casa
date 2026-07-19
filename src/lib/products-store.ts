@@ -1,16 +1,16 @@
+'use server';
+
 import { createClient } from '@supabase/supabase-js';
 import type { Product } from '@/lib/types';
 
 export type StoreActionResult = { success: boolean; message: string };
 
-// Connects your live code directly to your Supabase Cloud Database metrics
+// Initialize Supabase Client
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
-
-// --- Reads ---
-
+// 1. FETCH FROM CLOUD DATABASE
 export async function getProducts(): Promise<Product[]> {
   try {
     const { data, error } = await supabase
@@ -20,45 +20,27 @@ export async function getProducts(): Promise<Product[]> {
     if (error) throw error;
     if (!data) return [];
 
-    // Map clean database columns back to your TypeScript frontend schema attributes
     return data.map((row: any) => ({
-      id: row.id,
-      name: row.name,
-      category: row.category,
-      price: Number(row.price),
-      material: row.material || "Plaqué or 18 carats",
-      image: row.image || "/products/Logo.png",
-      sizes: row.sizes ? (typeof row.sizes === 'string' ? row.sizes.split(',').map((s: string) => s.trim()) : row.sizes) : [],
-      priceEstimated: row.price_estimated === "Oui" || row.price_estimated === true
+      id: row["ID (SKU)"] || row.id,
+      name: row["Nom du produit"] || row.name,
+      category: row["Catgorie (slug)"] || row["Catégorie (slug)"] || row.category,
+      price: Number(row["Prix (MAD)"] || row.price),
+      material: row["Matire"] || row["Matière"] || row.material || "Plaqué or 18 carats",
+      image: row["Chemin image"] || row["Chemin du produit"] || row.image || "/products/Logo.png",
+      sizes: row["Tailles disponibles"] || row.sizes 
+        ? (typeof (row["Tailles disponibles"] || row.sizes) === 'string' 
+            ? (row["Tailles disponibles"] || row.sizes).split(',').map((s: string) => s.trim()) 
+            : (row["Tailles disponibles"] || row.sizes)) 
+        : [],
+      priceEstimated: row["Prix estim ?"] === "Oui" || row["Prix estimé ?"] === "Oui" || row.priceEstimated === true
     }));
   } catch (error) {
-    console.error('Error fetching Supabase catalogue parameters:', error);
+    console.error('Error fetching Supabase parameters:', error);
     return [];
   }
 }
 
-export async function getProductById(id: string): Promise<Product | null> {
-  const all = await getProducts();
-  return all.find((p) => p.id === id) ?? null;
-}
-
-async function writeAll(products: Product[]): Promise<void> {
-  const text = JSON.stringify(products, null, 2) + '\n';
-  await fs.writeFile(DATA_FILE, text, 'utf8');
-}
-
-function slugify(input: string): string {
-  return input
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '') // strip accents (é -> e, etc.)
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/(^-|-$)/g, '');
-}
-
-// --- Write: add ---
-
-// Add a newly submitted piece via the Admin Dashboard Form using clean columns
+// 2. ADD A NEW PRODUCT VIA THE ADMIN DASHBOARD FORM
 export async function addProductEntry(formData: FormData): Promise<StoreActionResult> {
   try {
     const name = String(formData.get('name') ?? '').trim();
@@ -74,25 +56,25 @@ export async function addProductEntry(formData: FormData): Promise<StoreActionRe
     const id = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
 
     const { error } = await supabase.from('products').insert([{
-      id,
-      name,
-      category,
-      price,
-      material,
-      image: '/products/Logo.png',
-      sizes: sizesStr,
-      price_estimated: "Non"
+      "ID (SKU)": id,
+      "Nom du produit": name,
+      "Catgorie (slug)": category,
+      "Prix (MAD)": price,
+      "Matire": material,
+      "Chemin image": '/products/Logo.png',
+      "Tailles disponibles": sizesStr,
+      "Prix estim ?": "Non"
     }]);
 
     if (error) throw error;
 
     return { success: true, message: `Succès ! La pièce "${name}" est enregistrée.` };
   } catch (error) {
-    return { success: false, message: `Erreur : ${error}` };
+    return { success: false, message: `Erreur d'enregistrement : ${error}` };
   }
 }
 
-// Complete deletion cleanup loop
+// 3. COMPLETE DELETION FROM THE CLOUD DATABASE
 export async function deleteProductEntry(identifier: string): Promise<StoreActionResult> {
   try {
     if (!identifier) return { success: false, message: 'Veuillez fournir un nom ou un ID valide.' };
@@ -101,7 +83,7 @@ export async function deleteProductEntry(identifier: string): Promise<StoreActio
     const { error } = await supabase
       .from('products')
       .delete()
-      .or(`id.ilike.${searchTarget},name.ilike.${searchTarget}`);
+      .or(`"ID (SKU)".ilike.${searchTarget},"Nom du produit".ilike.${searchTarget}`);
 
     if (error) throw error;
 
