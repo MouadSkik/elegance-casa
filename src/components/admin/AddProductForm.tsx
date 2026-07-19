@@ -1,134 +1,131 @@
 'use client';
 
-import { useRef, useState, useTransition } from 'react';
+import { useState } from 'react';
 import { addProductAction } from '@/app/admin/dashboard/actions';
 
-const CATEGORIES = [
-  { slug: 'bagues', label: 'Bagues' },
-  { slug: 'boucles', label: 'Boucles' },
-  { slug: 'chaines', label: 'Chaînes' },
-  { slug: 'bracelets', label: 'Bracelets' },
-  { slug: 'parures', label: 'Parures' },
-];
-
-const inputClass =
-  'w-full border rule bg-transparent px-3 py-2 text-sm focus:outline-none focus:border-gold-deep';
-
 export function AddProductForm() {
-  const [pending, startTransition] = useTransition();
-  const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
-  const [imageFile, setImageFile] = useState<File | null>(null);
-  const [dragActive, setDragActive] = useState(false);
-  const formRef = useRef<HTMLFormElement>(null);
+  const [loading, setLoading] = useState(false);
+  const [status, setStatus] = useState<{ success: boolean; message: string } | null>(null);
 
-  const handleFiles = (files: FileList | null) => {
-    const file = files?.[0];
-    if (file) setImageFile(file);
-  };
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault(); // 🌟 CRITICAL: Completely freezes the page from trying to redirect and hitting a 404!
+    setLoading(true);
+    setStatus(null);
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    if (imageFile) formData.set('image', imageFile);
-
-    startTransition(async () => {
-      const result = await addProductAction(formData);
-      setMessage({ type: result.success ? 'success' : 'error', text: result.message });
+    try {
+      const formData = new FormData(e.currentTarget);
+      const result = await addProductAction(formData); // Sends data direct to Supabase background pipelines
+      
+      setStatus(result);
       if (result.success) {
-        formRef.current?.reset();
-        setImageFile(null);
+        (e.target as HTMLFormElement).reset(); // Clears out your text fields automatically on success
       }
-    });
-  };
+    } catch (err: any) {
+      setStatus({ success: false, message: err.message || "Une erreur inconnue s'est produite." });
+    } finally {
+      setLoading(false);
+    }
+  }
 
   return (
-    <form ref={formRef} onSubmit={handleSubmit} className="mt-6 flex flex-col gap-5">
-      <Field label="Nom du produit / Titre">
-        <input name="name" required className={inputClass} placeholder="Bague Royale Zirée" />
-      </Field>
-
-      <Field label="ID / Slug unique">
-        <input name="id" required className={inputClass} placeholder="bagues-025" />
-      </Field>
-
-      <Field label="Catégorie">
-        <select name="category" required defaultValue="" className={inputClass}>
-          <option value="" disabled>
-            Choisir…
-          </option>
-          {CATEGORIES.map((c) => (
-            <option key={c.slug} value={c.slug}>
-              {c.label}
-            </option>
-          ))}
-        </select>
-      </Field>
-
-      <Field label="Prix de vente (MAD)">
-        <input name="price" type="number" min="1" step="1" required className={inputClass} placeholder="690" />
-      </Field>
-
-      <Field label="Formulation matière">
-        <input name="material" required className={inputClass} placeholder="Or Fin 18k" />
-      </Field>
-
-      <Field label="Tailles (séparées par des virgules)">
-        <input name="sizes" className={inputClass} placeholder="50, 52, 54" />
-      </Field>
-
+    <form onSubmit={handleSubmit} className="mt-6 flex flex-col space-y-4">
       <div>
-        <p className="tracked-caps mb-2 text-xs text-ink-soft">Photo</p>
-        <label
-          onDragOver={(e) => {
-            e.preventDefault();
-            setDragActive(true);
-          }}
-          onDragLeave={() => setDragActive(false)}
-          onDrop={(e) => {
-            e.preventDefault();
-            setDragActive(false);
-            handleFiles(e.dataTransfer.files);
-          }}
-          className={`flex cursor-pointer flex-col items-center justify-center gap-2 border rule border-dashed px-4 py-8 text-center text-xs text-ink-soft transition-colors ${
-            dragActive ? 'border-gold-deep bg-linen-deep/40' : ''
-          }`}
-        >
-          <input
-            type="file"
-            accept="image/png,image/jpeg,image/webp"
-            className="hidden"
-            onChange={(e) => handleFiles(e.target.files)}
-          />
-          {imageFile ? (
-            <span className="text-ink">{imageFile.name}</span>
-          ) : (
-            <span>Glissez une image ici, ou cliquez pour parcourir</span>
-          )}
+        <label className="block text-[10px] uppercase tracking-widest text-neutral-400 font-light mb-1">
+          Nom du produit / Titre *
         </label>
+        <input
+          type="text"
+          name="name"
+          required
+          className="w-full rounded-xl border border-neutral-200 bg-white/50 px-4 py-2.5 text-xs text-[#111111] focus:outline-none focus:border-[#c5a880]"
+          placeholder="Ex: Bague Éclat Éternel"
+        />
       </div>
 
-      {message && (
-        <p className={`text-xs ${message.type === 'success' ? 'text-gold-deep' : 'text-red-700'}`}>
-          {message.text}
-        </p>
-      )}
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+          <label className="block text-[10px] uppercase tracking-widest text-neutral-400 font-light mb-1">
+            Prix (MAD) *
+          </label>
+          <input
+            type="number"
+            name="price"
+            required
+            className="w-full rounded-xl border border-neutral-200 bg-white/50 px-4 py-2.5 text-xs text-[#111111] focus:outline-none focus:border-[#c5a880]"
+            placeholder="690"
+          />
+        </div>
+
+        <div>
+          <label className="block text-[10px] uppercase tracking-widest text-neutral-400 font-light mb-1">
+            Catégorie *
+          </label>
+          <select
+            name="category"
+            required
+            className="w-full rounded-xl border border-neutral-200 bg-white/50 px-4 py-2.5 text-xs text-[#111111] focus:outline-none focus:border-[#c5a880] appearance-none"
+          >
+            <option value="bagues">Bagues</option>
+            <option value="boucles">Boucles</option>
+            <option value="chaines">Chaînes</option>
+            <option value="bracelets">Bracelets</option>
+            <option value="parures">Parures</option>
+          </select>
+        </div>
+      </div>
+
+      <div>
+        <label className="block text-[10px] uppercase tracking-widest text-neutral-400 font-light mb-1">
+          Matière / Description
+        </label>
+        <input
+          type="text"
+          name="material"
+          className="w-full rounded-xl border border-neutral-200 bg-white/50 px-4 py-2.5 text-xs text-[#111111] focus:outline-none focus:border-[#c5a880]"
+          placeholder="Ex: Plaqué or fin 18 carats"
+        />
+      </div>
+
+      <div>
+        <label className="block text-[10px] uppercase tracking-widest text-neutral-400 font-light mb-1">
+          Tailles (séparées par des virgules)
+        </label>
+        <input
+          type="text"
+          name="sizes"
+          className="w-full rounded-xl border border-neutral-200 bg-white/50 px-4 py-2.5 text-xs text-[#111111] focus:outline-none focus:border-[#c5a880]"
+          placeholder="Ex: 52, 54, 56"
+        />
+      </div>
+
+      <div>
+        <label className="block text-[10px] uppercase tracking-widest text-neutral-400 font-light mb-1">
+          Photo du produit *
+        </label>
+        <input
+          type="file"
+          name="image"
+          accept="image/*"
+          className="w-full text-xs text-neutral-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-[10px] file:uppercase file:tracking-widest file:font-medium file:bg-[#c5a880]/10 file:text-[#c5a880] hover:file:bg-[#c5a880]/20 cursor-pointer"
+        />
+      </div>
 
       <button
         type="submit"
-        disabled={pending}
-        className="pill-gold tracked-caps mt-2 rounded-full py-3 text-xs disabled:opacity-50"
+        disabled={loading}
+        className="w-full bg-[#C5A880] text-white py-3 rounded-full text-[10px] uppercase tracking-[0.2em] font-medium shadow-md transition-all hover:bg-[#a8845c] disabled:opacity-50 active:scale-98 mt-2 cursor-pointer"
       >
-        {pending ? 'Ajout en cours…' : 'Ajouter au catalogue'}
+        {loading ? 'Enregistrement...' : 'Ajouter au catalogue'}
       </button>
-    </form>
-  );
-}
 
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
-  return (
-    <label className="block">
-      <span className="tracked-caps mb-2 block text-xs text-ink-soft">{label}</span>
-      {children}
-    </label>
+      {/* Dynamic inline real-time feedback status indicators */}
+      {status && (
+        <div className={`p-4 rounded-xl text-xs font-light tracking-wide mt-2 ${
+          status.success ? 'bg-green-50 text-green-700 border border-green-200' : 'bg-red-50 text-red-700 border border-red-200'
+        }`}>
+          {status.message}
+        </div>
+      )}
+    </form>
   );
 }
