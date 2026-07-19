@@ -4,6 +4,11 @@ import { DeleteProductForm } from '@/components/admin/DeleteProductForm';
 
 export const dynamic = 'force-dynamic';
 
+// 🌟 FIXED: Overrides the default 1MB Server Action boundary limit to support large luxury image files up to 10MB!
+export const serverActions = {
+  bodySizeLimit: '10mb',
+};
+
 export default async function AdminDashboardPage() {
   const products = await getProducts();
 
