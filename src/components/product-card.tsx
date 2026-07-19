@@ -29,13 +29,14 @@ export function ProductCard({ product, index, onAdd, onOrder }: ProductCardProps
           whileHover={{ scale: 1.045 }}
           transition={{ duration: 0.95, ease: [0.22, 1, 0.36, 1] }}
         >
-          <Image src={product.imageSrc} alt={product.name} fill sizes="(max-width: 767px) 100vw, (max-width: 1279px) 50vw, 33vw" className="object-cover" />
+          <Image src={product.image as string} alt={product.name} fill sizes="(max-width: 767px) 100vw, (max-width: 1279px) 50vw, 33vw" className="object-cover" />
+
         </motion.div>
 
         <div className="absolute inset-0 bg-[linear-gradient(to_top,rgba(28,26,23,0.66),rgba(28,26,23,0.08)_40%,transparent_75%)]" />
 
         <div className="absolute left-4 top-4 flex flex-col gap-2">
-          {product.isOnSale && (
+          {product.onSale && (
             <motion.span
               className="inline-flex w-fit items-center rounded-full bg-gold px-3 py-1 text-[10px] font-medium tracking-[0.2em] text-charcoal shadow-[0_10px_24px_rgba(28,26,23,0.14)]"
               whileHover={{ y: -2 }}
@@ -63,7 +64,7 @@ export function ProductCard({ product, index, onAdd, onOrder }: ProductCardProps
       <div className="flex items-end justify-between gap-4 px-1 pt-5">
         <div className="min-w-0 flex-1">
           <p className="text-[10px] uppercase tracking-[0.2em] text-charcoal/42">Prix</p>
-          <p className="mt-1 text-lg font-medium text-charcoal">{product.priceMad} MAD</p>
+          <p className="mt-1 text-lg font-medium text-charcoal">{product.price} MAD</p>
         </div>
 
         <div className="flex shrink-0 items-center gap-2">
