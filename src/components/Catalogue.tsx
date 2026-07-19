@@ -32,7 +32,6 @@ export function Catalogue() {
   const totalPages = Math.max(1, Math.ceil(items.length / PAGE_SIZE));
   const pageItems = items.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
-  // Any category-tab change resets pagination back to page 1, per spec.
   const handleCategoryChange = (slug: CategorySlug | 'tout') => {
     setActive(slug);
     setPage(1);
@@ -43,43 +42,43 @@ export function Catalogue() {
     document.getElementById('catalogue')?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  // Defensive guard: if the active filter ever produces fewer pages than
-  // the current page number (e.g. inventory shrinks), snap back in range.
   useEffect(() => {
     if (page > totalPages) setPage(totalPages);
   }, [page, totalPages]);
 
   return (
-    <section id="catalogue">
+    <section id="catalogue" className="bg-[#fcfaf4]">
       <CategoryNav categories={populatedCategories} active={active} onChange={handleCategoryChange} />
 
-      <div className="mx-auto max-w-6xl px-6 py-14 md:py-20">
+      <div className="mx-auto max-w-6xl px-6 py-10 md:py-16">
         <motion.div
           key={active}
-          initial={{ opacity: 0, y: 14 }}
+          initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="mb-8 flex flex-col gap-2 border-b rule pb-6 md:flex-row md:items-end md:justify-between"
+          transition={{ duration: 0.6, ease: [0.25, 1, 0.5, 1] }}
+          {/* FIXED: Removed 'border-b rule' to wipe out that bothering dark separating line entirely */}
+          className="mb-12 flex flex-col gap-4 pb-4 md:flex-row md:items-end md:justify-between"
         >
           <div>
-            <p className="tracked-caps text-xs text-gold-deep">
-              {activeCategory ? activeCategory.sub : 'All'}
+            <p className="text-[10px] tracking-[0.24em] uppercase text-[#a8845c] font-light">
+              {activeCategory ? activeCategory.sub : 'Maison'}
             </p>
-            <h2 className="font-display text-4xl text-ink md:text-5xl">
+            {/* FIXED: Applied your stylish editorial font family layout weights */}
+            <h2 className="font-display text-3xl font-light italic text-[#2E2724] tracking-wide mt-2 md:text-4xl">
               {activeCategory ? activeCategory.label : 'Tous les produits'}
             </h2>
           </div>
-          <p className="max-w-sm text-sm text-ink-soft">
+          <p className="max-w-sm text-xs font-light leading-relaxed text-neutral-500">
             {activeCategory
               ? activeCategory.description
               : "L'ensemble de notre collection, réunie en une seule vitrine."}
           </p>
-          <p className="tracked-caps shrink-0 text-xs text-ink-soft/60">
+          <p className="text-[10px] tracking-[0.2em] uppercase text-neutral-400 font-light shrink-0">
             {items.length.toString().padStart(2, '0')} pièces
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-2 gap-x-5 gap-y-10 md:grid-cols-3 lg:grid-cols-4">
+        <div className="grid grid-cols-2 gap-x-5 gap-y-12 md:grid-cols-3 lg:grid-cols-4">
           {pageItems.map((product, i) => (
             <ProductCard key={product.id} product={product} index={i} />
           ))}
@@ -105,15 +104,15 @@ function Pagination({
   return (
     <nav
       aria-label="Pagination du catalogue"
-      className="mt-14 flex items-center justify-center gap-2 text-xs tracking-widest text-ink-soft"
+      className="mt-16 flex items-center justify-center gap-4 text-[11px] tracking-[0.2em] text-neutral-400 uppercase font-light"
     >
       <button
         onClick={() => onChange(Math.max(1, page - 1))}
         disabled={page === 1}
         aria-label="Page précédente"
-        className="px-2 py-1 transition-colors hover:text-gold-deep disabled:opacity-30"
+        className="px-2 py-1 transition-colors hover:text-[#c5a880] disabled:opacity-20 cursor-pointer"
       >
-        &lt;
+        Précédent
       </button>
 
       {Array.from({ length: totalPages }, (_, i) => i + 1).map((n) => (
@@ -121,8 +120,8 @@ function Pagination({
           key={n}
           onClick={() => onChange(n)}
           aria-current={n === page ? 'page' : undefined}
-          className={`px-2 py-1 transition-colors hover:text-gold-deep ${
-            n === page ? 'text-gold-deep' : ''
+          className={`px-3 py-1 transition-all rounded-full cursor-pointer ${
+            n === page ? 'text-[#FAF6F0] bg-[#c5a880] font-normal' : 'hover:text-[#c5a880]'
           }`}
         >
           {n}
@@ -133,9 +132,9 @@ function Pagination({
         onClick={() => onChange(Math.min(totalPages, page + 1))}
         disabled={page === totalPages}
         aria-label="Page suivante"
-        className="px-2 py-1 transition-colors hover:text-gold-deep disabled:opacity-30"
+        className="px-2 py-1 transition-colors hover:text-[#c5a880] disabled:opacity-20 cursor-pointer"
       >
-        &gt;
+        Suivant
       </button>
     </nav>
   );
