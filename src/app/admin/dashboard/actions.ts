@@ -15,7 +15,10 @@ export async function verifyPasscodeAction(formData: FormData): Promise<{ succes
   if (!verifyPasscode(candidate)) return { success: false };
 
   const token = createSessionToken();
-  cookies().set(SESSION_COOKIE, token, {
+  
+  // FIXED: Await the async cookie store container before modifying entries
+  const cookieStore = await cookies();
+  cookieStore.set(SESSION_COOKIE, token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'strict',
@@ -25,11 +28,11 @@ export async function verifyPasscodeAction(formData: FormData): Promise<{ succes
   return { success: true };
 }
 
-// The layout already hides these forms from unauthenticated visitors, but a
-// Server Action is a callable endpoint in its own right — re-check the
-// session here rather than trusting the UI alone.
-function requireSession(): StoreActionResult | null {
-  const token = cookies().get(SESSION_COOKIE)?.value;
+// FIXED: Converted to an async function to gracefully await the incoming request cookies
+async function requireSession(): Promise<StoreActionResult | null> {
+  // FIXED: Await the cookie store container to fetch the session token safely
+  const cookieStore = await cookies();
+  const token = cookieStore.get(SESSION_COOKIE)?.value;
   if (!isValidSessionToken(token)) {
     return { success: false, message: 'Session expirée ou non authentifiée — reconnectez-vous.' };
   }
@@ -37,13 +40,15 @@ function requireSession(): StoreActionResult | null {
 }
 
 export async function addProductAction(formData: FormData): Promise<StoreActionResult> {
-  const authError = requireSession();
+  // FIXED: Awaited the async authorization session function block check
+  const authError = await requireSession();
   if (authError) return authError;
   return addProductEntry(formData);
 }
 
 export async function deleteProductAction(formData: FormData): Promise<StoreActionResult> {
-  const authError = requireSession();
+  // FIXED: Awaited the async authorization session function block check
+  const authError = await requireSession();
   if (authError) return authError;
   const identifier = String(formData.get('identifier') ?? '').trim();
   return deleteProductEntry(identifier);
