@@ -36,7 +36,7 @@ export function ProductCard({ product, index, onAdd, onOrder }: ProductCardProps
         <div className="absolute inset-0 bg-[linear-gradient(to_top,rgba(28,26,23,0.66),rgba(28,26,23,0.08)_40%,transparent_75%)]" />
 
         <div className="absolute left-4 top-4 flex flex-col gap-2">
-          {product.onSale && (
+          {product.priceEstimated && (
             <motion.span
               className="inline-flex w-fit items-center rounded-full bg-gold px-3 py-1 text-[10px] font-medium tracking-[0.2em] text-charcoal shadow-[0_10px_24px_rgba(28,26,23,0.14)]"
               whileHover={{ y: -2 }}
