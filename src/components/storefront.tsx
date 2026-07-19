@@ -15,19 +15,20 @@ function scrollToCatalogue() {
 const MARQUEE_TEXT =
   " LIVRAISON DISPONIBLE SUR TOUT LE MAROC — COMMANDEZ DIRECTEMENT VIA WHATSAPP ✨ SOLDES D'ÉTÉ — JUSQU'À -30% SUR UNE SÉLECTION DE BIJOUX EXCLUSIFS ";
 
-function MarqueeBanner() {
+export function MarqueeBanner() {
   const MARQUEE_TEXT = " ✨ LIVRAISON DISPONIBLE SUR TOUT LE MAROC — COMMANDEZ DIRECTEMENT VIA WHATSAPP ✨ SOLDES D'ÉTÉ — JUSQU'À -30% SUR UNE SÉLECTION DE BIJOUX EXCLUSIFS ";
 
   return (
-    <div className="overflow-hidden border-b rule py-2 w-full" style={{ backgroundColor: '#FAF6F0' }}>
+    <div className="overflow-hidden border-b border-[#D4A393]/20 py-2.5 w-full select-none relative z-50" style={{ backgroundColor: '#FAF6F0' }}>
       <motion.div
-        className="flex w-max shrink-0 whitespace-nowrap text-xs font-light uppercase tracking-widest flex-nowrap"
+        className="flex w-max shrink-0 whitespace-nowrap text-[11px] font-light uppercase tracking-[0.24em] flex-nowrap"
         style={{ color: '#2E2724' }}
         animate={{ x: ['0%', '-50%'] }}
         transition={{ ease: 'linear', duration: 35, repeat: Infinity }}
       >
+        {/* Fixed data mapping tracking to loop the advertisement string array seamlessly without errors */}
         {[0, 1, 2, 3].map((copy) => (
-          <span key={copy} className="inline-block shrink-0 px-4">
+          <span key={copy} className="inline-block shrink-0 px-6">
             {MARQUEE_TEXT}
           </span>
         ))}
@@ -35,6 +36,7 @@ function MarqueeBanner() {
     </div>
   );
 }
+
 
 /* 2. Minimalist floating navbar */
 function FloatingNavbar() {
