@@ -57,7 +57,6 @@ export function ProductCard({ product, index, onAdd, onOrder }: ProductCardProps
         <div className="absolute inset-x-0 bottom-0 p-5 text-cream">
           <p className="text-[10px] uppercase tracking-[0.22em] text-gold/90">{product.category}</p>
           <h3 className="mt-2 font-display text-2xl leading-[1.05]">{product.name}</h3>
-          <p className="mt-2 max-w-[26ch] text-[13px] leading-6 text-cream/76">{product.desc}</p>
         </div>
       </motion.div>
 
