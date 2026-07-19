@@ -85,9 +85,7 @@ export function Catalogue() {
             key={product.id} 
             product={product} 
             index={i} 
-            onAdd={() => {}} 
-            onOrder={() => {}} 
-            />
+            onAdd={() => {}}             />
             ))}
 
         </div>
