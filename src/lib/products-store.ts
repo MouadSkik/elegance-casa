@@ -63,7 +63,7 @@ export async function addProductEntry(formData: FormData): Promise<StoreActionRe
       imageUrl = `data:${imageFile.type};base64,${base64String}`;
     }
 
-        // 🌟 FIXED: Points directly to your true accented Supabase table columns layout key!
+    // 🌟 FIXED: Points directly to your true accented Supabase table columns layout key!
     const { error } = await supabase.from('products').insert([{
       "ID (SKU)": finalId,
       "Nom du produit": name,
