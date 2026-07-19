@@ -56,14 +56,12 @@ export function Catalogue() {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: [0.25, 1, 0.5, 1] }}
-          {/* FIXED: Removed 'border-b rule' to wipe out that bothering dark separating line entirely */}
           className="mb-12 flex flex-col gap-4 pb-4 md:flex-row md:items-end md:justify-between"
         >
           <div>
             <p className="text-[10px] tracking-[0.24em] uppercase text-[#a8845c] font-light">
               {activeCategory ? activeCategory.sub : 'Maison'}
             </p>
-            {/* FIXED: Applied your stylish editorial font family layout weights */}
             <h2 className="font-display text-3xl font-light italic text-[#2E2724] tracking-wide mt-2 md:text-4xl">
               {activeCategory ? activeCategory.label : 'Tous les produits'}
             </h2>
