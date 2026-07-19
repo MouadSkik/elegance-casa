@@ -63,17 +63,18 @@ export async function addProductEntry(formData: FormData): Promise<StoreActionRe
       imageUrl = `data:${imageFile.type};base64,${base64String}`;
     }
 
-    // 🌟 FIXED: Links up perfectly with your precise database tracking keys cache!
+        // 🌟 FIXED: Points directly to your true accented Supabase table columns layout key!
     const { error } = await supabase.from('products').insert([{
       "ID (SKU)": finalId,
       "Nom du produit": name,
-      "Catgorie (slug)": category, // Matches your clean table schema key
+      "Catégorie (slug)": category, // Matches your true accented column header schema cache
       "Prix (MAD)": price,
-      "Matire": material,
+      "Matière": material,
       "Chemin image": imageUrl,
       "Tailles disponibles": sizesStr,
-      "Prix estim ?": "Non"
+      "Prix estimé ?": "Non"
     }]);
+
 
 
     if (error) throw error;
