@@ -40,6 +40,8 @@ export async function getProducts(): Promise<Product[]> {
 }
 
 // 2. ADD PRODUCT + BASE64 IMAGE ENCODING
+
+// Add a newly submitted piece via the Admin Dashboard Form using true accented columns
 export async function addProductEntry(formData: FormData): Promise<StoreActionResult> {
   try {
     const name = String(formData.get('name') ?? '').trim();
@@ -63,11 +65,11 @@ export async function addProductEntry(formData: FormData): Promise<StoreActionRe
       imageUrl = `data:${imageFile.type};base64,${base64String}`;
     }
 
-    // 🌟 FIXED: Points directly to your true accented Supabase table columns layout key!
+    // 🌟 FIXED: Uses true clean French accents to perfectly match your Supabase columns!
     const { error } = await supabase.from('products').insert([{
       "ID (SKU)": finalId,
       "Nom du produit": name,
-      "Catégorie (slug)": category, // Matches your true accented column header schema cache
+      "Catégorie (slug)": category, // True é accent to pass the schema cache validation
       "Prix (MAD)": price,
       "Matière": material,
       "Chemin image": imageUrl,
@@ -75,14 +77,17 @@ export async function addProductEntry(formData: FormData): Promise<StoreActionRe
       "Prix estimé ?": "Non"
     }]);
 
+    if (error) {
+      console.error("Supabase Insertion Error details:", error);
+      return { success: false, message: `Détails Supabase : ${error.message || JSON.stringify(error)}` };
+    }
 
-
-    if (error) throw error;
     return { success: true, message: `Succès ! La pièce "${name}" est désormais visible sur votre boutique live.` };
   } catch (error: any) {
     return { success: false, message: `Erreur d'enregistrement : ${error.message || error}` };
   }
 }
+
 
 // 3. FIXED DELETION SEARCH MATRIX ROUTINE
 export async function deleteProductEntry(identifier: string): Promise<StoreActionResult> {
