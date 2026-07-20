@@ -1,9 +1,9 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* Core framework config options */
+  /* Core framework production environment options */
   experimental: {
-    // 🌟 FIXED: Modern framework method to increase server upload limits safely up to 10MB!
+    // 🌟 FIXED: Modern Next.js 16 type-safe path layout to expand limits up to 10MB!
     serverActions: {
       bodySizeLimit: '10mb',
     },
